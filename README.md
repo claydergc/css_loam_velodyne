@@ -1,5 +1,4 @@
 # CSS-LOAM
-css_loam_velodyne
 
 This repository contains the code of the [Indigo version of loam_velodyne](http://docs.ros.org/indigo/api/loam_velodyne/html/files.html) written by J. Zhang in 2014, but with the feature extraction algorithm changed by the Curvature Scale Space (CSS) algorithm. CSS features only replaces sharp features, planar features extraction is maintained as the original code.
 
