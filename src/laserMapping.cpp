@@ -49,6 +49,7 @@
 //#include <loam_velodyne/css.h>
 
 const float scanPeriod = 0.1;
+//const float scanPeriod = 0.2;
 
 const int stackFrameNum = 1;
 const int mapFrameNum = 5;
@@ -438,22 +439,30 @@ int main(int argc, char** argv)
   //ros::Rate rate(50);
   //ros::Rate rate(10);
   //ros::Rate rate(5);
+  //ros::Rate rate(1);
   bool status = ros::ok();
   while (status) {
     ros::spinOnce();
 
     /*if (newLaserCloudCornerLast && newLaserCloudSurfLast && newLaserCloudFullRes && newLaserOdometry &&
+        fabs(timeLaserCloudCornerLast - timeLaserOdometry) < 1 &&
+        fabs(timeLaserCloudSurfLast - timeLaserOdometry) < 1 &&
+        fabs(timeLaserCloudFullRes - timeLaserOdometry) < 1) {*/
+
+    /*if (newLaserCloudCornerLast && newLaserCloudSurfLast && newLaserCloudFullRes && newLaserOdometry &&
         fabs(timeLaserCloudCornerLast - timeLaserOdometry) < 0.005 &&
         fabs(timeLaserCloudSurfLast - timeLaserOdometry) < 0.005 &&
         fabs(timeLaserCloudFullRes - timeLaserOdometry) < 0.005) {*/
+    
     if (newLaserCloudCornerLast && newLaserCloudSurfLast && newLaserCloudFullRes && newLaserOdometry &&
         fabs(timeLaserCloudCornerLast - timeLaserOdometry) < 0.05 &&
         fabs(timeLaserCloudSurfLast - timeLaserOdometry) < 0.05 &&
         fabs(timeLaserCloudFullRes - timeLaserOdometry) < 0.05) {
+
     /*if (newLaserCloudCornerLast && newLaserCloudSurfLast && newLaserCloudFullRes && newLaserOdometry &&
-        fabs(timeLaserCloudCornerLast - timeLaserOdometry) < 0.01 &&
-        fabs(timeLaserCloudSurfLast - timeLaserOdometry) < 0.01 &&
-        fabs(timeLaserCloudFullRes - timeLaserOdometry) < 0.01) {*/
+        fabs(timeLaserCloudCornerLast - timeLaserOdometry) < 0.1 &&
+        fabs(timeLaserCloudSurfLast - timeLaserOdometry) < 0.1 &&
+        fabs(timeLaserCloudFullRes - timeLaserOdometry) < 0.1) {*/
       newLaserCloudCornerLast = false;
       newLaserCloudSurfLast = false;
       newLaserCloudFullRes = false;

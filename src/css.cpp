@@ -379,6 +379,9 @@ void getFinalKeypointsAtMinScale(PointCloud<PointXYZI> in, std::vector<int> clus
 		//if(keypointsFinalCounter[i].counter>14) //keypoints must have been found in at least 10 scales out of 16
 		//if(keypointsFinalCounter[i].counter>3) //keypoints must have been found in at least 10 scales out of 16
 		//if(keypointsFinalCounter[i].counter>13) //keypoints must have been found in at least 10 scales out of 16
+		//if(keypointsFinalCounter[i].counter>13) //keypoints must have been found in at least 10 scales out of 16
+
+		//if(keypointsFinalCounter[i].counter>13) //keypoints must have been found in at least 10 scales out of 16
 		if(keypointsFinalCounter[i].counter>13) //keypoints must have been found in at least 10 scales out of 16
 		{
 			CSSKeypoint cssKp;

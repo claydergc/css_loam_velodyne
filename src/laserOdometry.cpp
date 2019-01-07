@@ -47,6 +47,7 @@
 #include <tf/transform_broadcaster.h>
 
 const float scanPeriod = 0.1;
+//const float scanPeriod = 0.2;
 
 const int skipFrameNum = 1;
 bool systemInited = false;
@@ -101,6 +102,7 @@ float imuVeloFromStartX = 0, imuVeloFromStartY = 0, imuVeloFromStartZ = 0;
 void TransformToStart(PointType const * const pi, PointType * const po)
 {
   float s = 10 * (pi->intensity - int(pi->intensity));
+  //float s = 1;
 
   float rx = s * transform[0];
   float ry = s * transform[1];
@@ -443,25 +445,35 @@ int main(int argc, char** argv)
 
     /*if (newCornerPointsSharp && newCornerPointsLessSharp && newSurfPointsFlat &&
         newSurfPointsLessFlat && newLaserCloudFullRes && newImuTrans &&
+        fabs(timeCornerPointsSharp - timeSurfPointsLessFlat) < 1 &&
+        fabs(timeCornerPointsLessSharp - timeSurfPointsLessFlat) < 1 &&
+        fabs(timeSurfPointsFlat - timeSurfPointsLessFlat) < 1 &&
+        fabs(timeLaserCloudFullRes - timeSurfPointsLessFlat) < 1 &&
+        fabs(timeImuTrans - timeSurfPointsLessFlat) < 1) {*/
+
+    /*if (newCornerPointsSharp && newCornerPointsLessSharp && newSurfPointsFlat &&
+        newSurfPointsLessFlat && newLaserCloudFullRes && newImuTrans &&
         fabs(timeCornerPointsSharp - timeSurfPointsLessFlat) < 0.005 &&
         fabs(timeCornerPointsLessSharp - timeSurfPointsLessFlat) < 0.005 &&
         fabs(timeSurfPointsFlat - timeSurfPointsLessFlat) < 0.005 &&
         fabs(timeLaserCloudFullRes - timeSurfPointsLessFlat) < 0.005 &&
         fabs(timeImuTrans - timeSurfPointsLessFlat) < 0.005) {*/
+
     if (newCornerPointsSharp && newCornerPointsLessSharp && newSurfPointsFlat &&
         newSurfPointsLessFlat && newLaserCloudFullRes && newImuTrans &&
         fabs(timeCornerPointsSharp - timeSurfPointsLessFlat) < 0.05 &&
         fabs(timeCornerPointsLessSharp - timeSurfPointsLessFlat) < 0.05 &&
         fabs(timeSurfPointsFlat - timeSurfPointsLessFlat) < 0.05 &&
         fabs(timeLaserCloudFullRes - timeSurfPointsLessFlat) < 0.05 &&
-        fabs(timeImuTrans - timeSurfPointsLessFlat) < 0.05) {
+        fabs(timeImuTrans - timeSurfPointsLessFlat) < 0.05) { //correcto
+
     /*if (newCornerPointsSharp && newCornerPointsLessSharp && newSurfPointsFlat &&
         newSurfPointsLessFlat && newLaserCloudFullRes && newImuTrans &&
-        fabs(timeCornerPointsSharp - timeSurfPointsLessFlat) < 0.01 &&
-        fabs(timeCornerPointsLessSharp - timeSurfPointsLessFlat) < 0.01 &&
-        fabs(timeSurfPointsFlat - timeSurfPointsLessFlat) < 0.01 &&
-        fabs(timeLaserCloudFullRes - timeSurfPointsLessFlat) < 0.01 &&
-        fabs(timeImuTrans - timeSurfPointsLessFlat) < 0.01) {*/
+        fabs(timeCornerPointsSharp - timeSurfPointsLessFlat) < 0.1 &&
+        fabs(timeCornerPointsLessSharp - timeSurfPointsLessFlat) < 0.1 &&
+        fabs(timeSurfPointsFlat - timeSurfPointsLessFlat) < 0.1 &&
+        fabs(timeLaserCloudFullRes - timeSurfPointsLessFlat) < 0.1 &&
+        fabs(timeImuTrans - timeSurfPointsLessFlat) < 0.1) {*/
       newCornerPointsSharp = false;
       newCornerPointsLessSharp = false;
       newSurfPointsFlat = false;
@@ -908,7 +920,7 @@ int main(int argc, char** argv)
 
       geometry_msgs::Quaternion geoQuat = tf::createQuaternionMsgFromRollPitchYaw(rz, -rx, -ry);
 
-      laserOdometry.header.stamp = ros::Time().fromSec(timeSurfPointsLessFlat);
+      laserOdometry.header.stamp = ros::Time().fromSec(timeSurfPointsLessFlat); //reproject point stamp
       laserOdometry.pose.pose.orientation.x = -geoQuat.y;
       laserOdometry.pose.pose.orientation.y = -geoQuat.z;
       laserOdometry.pose.pose.orientation.z = geoQuat.x;

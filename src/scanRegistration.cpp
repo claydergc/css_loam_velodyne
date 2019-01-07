@@ -52,11 +52,16 @@
 #include <tf/transform_broadcaster.h>
 #include <pcl/sample_consensus/sac_model_circle.h>
 
+#include <iostream>
+#include <fstream>
+using namespace std;
+
 using std::sin;
 using std::cos;
 using std::atan2;
 
 const double scanPeriod = 0.1;
+//const double scanPeriod = 0.2;
 
 const int systemDelay = 20;
 //const int systemDelay = 10;
@@ -64,6 +69,9 @@ int systemInitCount = 0;
 bool systemInited = false;
 
 //const int N_SCANS = 16;
+//const float ang_res_y = 2.0;
+//const float ang_bottom = 15+0.1;
+
 const int N_SCANS = 64;
 const float ang_res_y = 0.427;
 const float ang_bottom = 24.9;
@@ -686,6 +694,9 @@ long frame = 0;
 long sharpFeaturesNum = 0;
 long lessSharpFeaturesNum = 0;
 
+//ofstream featuresNumber("/home/claydergc/featuresNumber02.txt");
+//ofstream featuresNumber;
+
 void laserCloudHandler(const sensor_msgs::PointCloud2ConstPtr& laserCloudMsg)
 {
   if (!systemInited) {
@@ -708,9 +719,9 @@ void laserCloudHandler(const sensor_msgs::PointCloud2ConstPtr& laserCloudMsg)
 
   //std::cout<<"Tamanio"<<cloudSize<<std::endl;
 
-  float startOri = -atan2(laserCloudIn.points[0].y, laserCloudIn.points[0].x);
+  float startOri = -atan2(laserCloudIn.points[0].y, laserCloudIn.points[0].x); //orientation of the first point
   float endOri = -atan2(laserCloudIn.points[cloudSize - 1].y,
-                        laserCloudIn.points[cloudSize - 1].x) + 2 * M_PI;
+                        laserCloudIn.points[cloudSize - 1].x) + 2 * M_PI; //orientation of the last point
 
   if (endOri - startOri > 3 * M_PI) {
     endOri -= 2 * M_PI;
@@ -769,7 +780,7 @@ void laserCloudHandler(const sensor_msgs::PointCloud2ConstPtr& laserCloudMsg)
       continue;
     }*/
 
-    float ori = -atan2(point.x, point.z);
+    float ori = -atan2(point.x, point.z); //orientation
     if (!halfPassed) {
       if (ori < startOri - M_PI / 2) {
         ori += 2 * M_PI;
@@ -890,9 +901,11 @@ void laserCloudHandler(const sensor_msgs::PointCloud2ConstPtr& laserCloudMsg)
   //extractFeatures(laserCloud, cloudSize, cornerPointsSharp, cornerPointsLessSharp, surfPointsFlat, surfPointsLessFlat);
   extractFeaturesCSS(laserCloudScans, cloudSize, cornerPointsSharp, cornerPointsLessSharp, surfPointsFlat, surfPointsLessFlat);
   
-  sharpFeaturesNum += cornerPointsSharp.size();
-  lessSharpFeaturesNum += cornerPointsLessSharp.size();
-  frame++;
+  //sharpFeaturesNum += cornerPointsSharp.size();
+  //lessSharpFeaturesNum += cornerPointsLessSharp.size();
+  //frame++;
+
+  //featuresNumber<<cornerPointsSharp.size()<<" "<<cornerPointsLessSharp.size()<<"\n";
 
   //extractFeaturesCSS(laserCloudScans, cloudSize, cornerPointsSharp, cornerPointsLessSharp, surfPointsFlat, surfPointsLessFlat);
   //std::cout<<"Sharp points: "<<cornerPointsSharp.size()<<std::endl;
@@ -985,6 +998,10 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "scanRegistration");
   ros::NodeHandle nh;
 
+
+  //string fileName(argv[1]);
+  //featuresNumber = ofstream("/home/claydergc/"+fileName);
+
   //std::cout<<"HolaMundo\n";
   initKernels(gaussian1, gaussian2);
 
@@ -1013,6 +1030,9 @@ int main(int argc, char** argv)
   ros::Subscriber subLaserCloud = nh.subscribe<sensor_msgs::PointCloud2>
                                   ("/kitti/velo/pointcloud", 1, laserCloudHandler);
 
+  //ros::Subscriber subLaserCloud = nh.subscribe<sensor_msgs::PointCloud2>
+  //                                ("/velodyne_points", 1, laserCloudHandler);                                  
+
   ros::Subscriber subImu = nh.subscribe<sensor_msgs::Imu> ("/imu/data", 50, imuHandler);
 
   pubLaserCloud = nh.advertise<sensor_msgs::PointCloud2>
@@ -1036,8 +1056,10 @@ int main(int argc, char** argv)
 
   ros::spin();
 
-  std::cout<<"Sharp Features Number: "<<sharpFeaturesNum/frame<<std::endl;
-  std::cout<<"Less Sharp Features Number: "<<lessSharpFeaturesNum/frame<<std::endl;
+  //featuresNumber.close();
+
+  //std::cout<<"Sharp Features Number: "<<sharpFeaturesNum/frame<<std::endl;
+  //std::cout<<"Less Sharp Features Number: "<<lessSharpFeaturesNum/frame<<std::endl;
 
   return 0;
 }
