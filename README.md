@@ -19,9 +19,10 @@ $ catkin_make -DCMAKE_BUILD_TYPE=Release
 $ source ~/catkin_ws/devel/setup.bash
 ```
 
+Running:
+
 The launch file contains a parameter in which you can set the number of the KITTI dataset sequence you want to run.
 
-Running:
 ```
 roslaunch css_loam_velodyne css_loam_velodyne.launch
 ```
